@@ -22,6 +22,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="koko\" />
 	  <Folder Include="wwwroot\images\" />
 	</ItemGroup>
 		
