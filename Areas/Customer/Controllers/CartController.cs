@@ -5,6 +5,7 @@ using E_CommerceFIdentityScaff.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Stripe.Checkout;
 using System.Security.Claims;
 
 namespace E_CommerceFIdentityScaff.Areas.Customer.Controllers
@@ -95,5 +96,50 @@ namespace E_CommerceFIdentityScaff.Areas.Customer.Controllers
             return RedirectToAction("Index");
 
         }
+
+        public IActionResult Pay(ShoppingCart shoppingCart)
+        {
+            var appuserid = _userManager.GetUserId(User);
+
+
+            var shoppingCarts = _unitOfWork.Cart.GetAll(c => c.ApplicationUserId == appuserid, includes: [c => c.Product]);
+
+            var options = new SessionCreateOptions
+            {
+                PaymentMethodTypes = new List<string> { "card" },
+                LineItems = new List<SessionLineItemOptions>(),
+            
+            //   
+                Mode = "payment",
+                SuccessUrl = $"{Request.Scheme}://{Request.Host}/Customer/checkout/success",
+                CancelUrl = $"{Request.Scheme}://{Request.Host}/Customer/checkout/cancel",
+            };
+
+            foreach(var item in shoppingCarts)
+            {
+                options.LineItems.Add(new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        Currency = "usd",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.Product.Title,
+                            Description = item.Product.Description,
+                        },
+                        UnitAmount = (long)item.Product.Price*100,
+                    },
+                    Quantity = item.count,
+                });
+            
+        }
+            var service = new SessionService();
+            var session = service.Create(options);
+            return Redirect(session.Url);
+
+        }
+
+     
+       
     }
 }

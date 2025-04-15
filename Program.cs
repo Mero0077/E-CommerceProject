@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Google;
 using E_CommerceFIdentityScaff.Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Stripe;
 
 namespace E_CommerceFIdentityScaff
 {
@@ -55,6 +56,8 @@ namespace E_CommerceFIdentityScaff
 
             builder.Services.AddSingleton<IEmailSender, DummyEmailSender>();
 
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
             var app = builder.Build();
 

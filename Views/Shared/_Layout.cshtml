@@ -10,44 +10,157 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href=" //cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />"
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css" />
     <link rel="stylesheet" href="~/E_CommerceFIdentityScaff.styles.css" asp-append-version="true" />
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0.5rem 0;
+        }
+
+        .navbar-brand {
+            padding: 0;
+            margin-right: 2rem;
+        }
+
+            .navbar-brand img {
+                height: 60px;
+                transition: all 0.3s ease;
+            }
+
+            .navbar-brand:hover img {
+                transform: scale(1.05);
+            }
+
+        .nav-link {
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+            .nav-link:hover {
+                background-color: rgba(0,0,0,0.05);
+                color: var(--secondary-color) !important;
+            }
+
+            .nav-link.active {
+                color: var(--secondary-color) !important;
+                font-weight: 600;
+            }
+
+        .cart-count {
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
+            margin-left: 0.3rem;
+        }
+
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+            .footer-links a {
+                color: var(--light-color);
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+                .footer-links a:hover {
+                    color: var(--secondary-color);
+                }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+            .social-icons a {
+                color: white;
+                font-size: 1.5rem;
+                transition: color 0.3s ease;
+            }
+
+                .social-icons a:hover {
+                    color: var(--secondary-color);
+                }
+
+        .copyright {
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">E_CommerceFIdentityScaff</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white">
+            <div class="container">
+                <!-- Logo and Brand -->
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/Logo.png" alt="Logo" class="img-fluid" />
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index" >Home</a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")"
+                               asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        
-                        @if( User.IsInRole( Roles.Role_sAdmin)|| User.IsInRole(Roles.Role_Admin))
+
+                        @if (User.IsInRole(Roles.Role_sAdmin) || User.IsInRole(Roles.Role_Admin))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Management</a>
+                                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Privacy" ? "active" : "")"
+                                   asp-area="" asp-controller="Home" asp-action="Privacy">Management</a>
                             </li>
                         }
-                        <li class="nav-item">
-                            <a  class="nav-link text-dark" asp-area="Customer" asp-controller="Cart" asp-action="Index">
-                                <i class="bi bi-bag"></i> Cart &nbsp(@await Component.InvokeAsync("Cart"))
 
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Cart" ? "active" : "")"
+                               asp-area="Customer" asp-controller="Cart" asp-action="Index">
+                                <i class="bi bi-cart3"></i> Cart
+                                <span class="cart-count">(@await Component.InvokeAsync("Cart"))</span>
                             </a>
                         </li>
-
                     </ul>
 
-                    <partial name="_LoginPartial" />
+                    <div class="d-flex align-items-center">
+                        <partial name="_LoginPartial" />
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             <partial name="_Notifications" />
@@ -55,11 +168,37 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - E_CommerceFIdentityScaff - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer>
+        <div class="container ">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    @* <a class="navbar-brand mb-3" href="#"> *@
+                    @*     <img src="~/images/Logo.png" alt="Logo" style="height: 50px; filter: brightness(0) invert(1);"> *@
+                    @* </a> *@
+
+                    <div class="footer-links">
+                        <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <a href="#">Terms of Service</a>
+                        <a href="#">Shipping Policy</a>
+                        <a href="#">Contact Us</a>
+                    </div>
+
+                    <div class="social-icons">
+                        <a href="#"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-twitter"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                        <a href="#"><i class="bi bi-linkedin"></i></a>
+                    </div>
+
+                    <div class="copyright">
+                        &copy; 2025 E-Commerce. All rights reserved.
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

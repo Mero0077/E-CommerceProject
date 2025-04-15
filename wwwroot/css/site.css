@@ -29,9 +29,9 @@ body {
     padding: 0.5rem 1rem;
 }
 
-    .login-btn:hover {
-        background-color: #9FEF1C; 
-        color: white;
-        transform: translateY(2px); /* pushes it down slightly */
-        box-shadow: none; 
-    }
+.login-btn:hover {
+    background-color: #9FEF1C;
+    color: white;
+    transform: translateY(2px); /* pushes it down slightly */
+    box-shadow: none;
+}

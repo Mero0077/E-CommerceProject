@@ -87,7 +87,26 @@
                     </td>
                 </tr>
 
+               
             }
         </tbody>
     </table>
+    <div class="row mt-3">
+        <div class="col-12 d-flex justify-content-center">
+
+            <nav aria-label="...">
+                <ul class="pagination">
+                    @for (int i = 1; i <= ViewBag.PageNums+1; i++)
+                   {
+                        <li class="page-item"><a class="page-link" href="/Admin/User/Index?page=@i">@i</a></li>
+                       
+                   }
+                   
+                   
+                   
+                </ul>
+            </nav>
+        </div>
+    </div>
+
 </div>
