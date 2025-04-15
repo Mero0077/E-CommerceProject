@@ -1,0 +1,280 @@
+﻿@model ShoppingCart
+
+<form asp-action="AddToCart" asp-controller="Cart" asp-area="Customer" method="post">
+    <input type="hidden"asp-for="ProductId" />
+    <div class="card shadow border-0 mt-4 overflow-hidden">
+        <!-- Card Header with Gradient -->
+        <div class="card-header bg-gradient" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); height: 180px; position: relative; overflow: hidden;">
+            <div class="position-absolute w-100 h-100 d-flex flex-column justify-content-start align-items-start p-3">
+                <!-- Moved Product Title and Author to the top-left -->
+                <h3 class="text-white text-uppercase fw-bold mb-1 fs-4">@Model.Product.Title</h3>
+                <p class="text-white-50 mb-2 fs-6">by @Model.Product.Author</p>
+
+                <!-- Floating price tag -->
+                <div class="position-absolute top-0 end-0 m-3">
+                    <div class="bg-white text-primary rounded-pill px-3 py-1 shadow-sm">
+                        <span class="fw-bold fs-5">@Model.Product.Price.ToString("c")</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Decorative elements -->
+            <div class="position-absolute bottom-0 start-0 w-100">
+                <div class="bg-white" style="height: 20px; clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 0, 0 100%, 20px 100%, 40px 60%, 60px 100%, 80px 70%, 100px 100%, 120px 50%, 140px 100%, 0 100%)"></div>
+            </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body p-4">
+            <div class="row g-4">
+                <!-- Back Button -->
+                <div class="col-12 mb-4">
+                    <a asp-action="Index" class="btn btn-outline-primary rounded-pill px-4 py-2">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Products
+                    </a>
+                </div>
+
+                <!-- Product Image -->
+                <div class="col-lg-4 text-center">
+                    <div class="position-relative">
+                        <img src="~/Images/@Model.Product.ImagePath"
+                             class="img-fluid rounded-3 shadow"
+                             style="max-height: 450px; object-fit: contain;"
+                             alt="@Model.Product.Title">
+
+                        <!-- Category Badge -->
+                        <div class="position-absolute top-0 start-0 mt-3 ms-3">
+                            <span class="badge bg-primary bg-opacity-75 text-white fs-6 rounded-pill px-3 py-2">
+                                @Model.Product.Category.Name
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Details -->
+                <div class="col-lg-8">
+                    <div class="d-flex flex-column h-100">
+                        <!-- Basic Info (Move ISBN higher) -->
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-upc-scan text-muted me-2 fs-5"></i>
+                                <span class="text-muted fs-5">ISBN: @Model.Product.ISBN</span> <!-- Increased font size for ISBN -->
+                            </div>
+
+                            <div class="mb-3">
+                                <h5 class="text-primary fs-4">About This Product</h5> <!-- Increased title font size -->
+                                <p class="text-muted lh-lg" style="text-align: justify;">@Model.Product.Description</p>
+                            </div>
+                        </div>
+
+                        <!-- Pricing Table -->
+                        <div class="mb-4">
+                            <h5 class="text-primary fs-4 mb-3">Bulk Pricing</h5> <!-- Larger font for section title -->
+                            <div class="table-responsive">
+                                <table class="table table-hover table-borderless">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th class="text-start ps-3">Quantity</th>
+                                            <th class="text-center">1-50</th>
+                                            <th class="text-center">51-100</th>
+                                            <th class="text-center">100+</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-start ps-3 fw-semibold">Unit Price</td>
+                                            <td class="text-center text-success fw-bold">@Model.Product.Price.ToString("c")</td>
+                                            <td class="text-center text-success fw-bold">@Model.Product.Price50.ToString("c")</td>
+                                            <td class="text-center text-success fw-bold">@Model.Product.Price100.ToString("c")</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-start ps-3 fw-semibold">You Save</td>
+                                            <td class="text-center text-danger">-</td>
+                                            <td class="text-center text-danger">@((Model.Product.Price - Model.Product.Price50).ToString("c"))</td>
+                                            <td class="text-center text-danger">@((Model.Product.Price - Model.Product.Price100).ToString("c"))</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Order Section -->
+                        <div class="mt-auto">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold">Quantity</label>
+                                    <div class="input-group">
+                                        <button class="btn btn-outline-secondary" type="button" id="decrement-qty">-</button>
+                                        <input asp-for="count" type="number" value="1"
+                                               class="form-control text-end"
+                                               id="product-quantity">
+                                        <button class="btn btn-outline-secondary" type="button" id="increment-qty">+</button>
+                                    </div>
+                                </div>
+                               
+                                <div class="col-md-9">
+
+                                    
+                                        <button type="submit" class="btn btn-primary btn-lg w-100 py-3 shadow">
+                                            <i class="bi bi-cart-plus-fill me-2"></i>
+                                            Add to Cart
+                                        </button>
+                                    
+
+                                   
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<style>
+    .card {
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .card-header {
+        border-bottom: none;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(13, 110, 253, 0.05);
+    }
+
+    .input-group button {
+        width: 40px;
+    }
+
+    #product-quantity {
+        max-width: 60px;
+    }
+</style>
+
+
+@section Scripts {
+    <script>
+        // Quantity increment/decrement
+        document.getElementById('increment-qty').addEventListener('click', function() {
+            const input = document.getElementById('product-quantity');
+            input.value = parseInt(input.value) + 1;
+        });
+
+        document.getElementById('decrement-qty').addEventListener('click', function() {
+            const input = document.getElementById('product-quantity');
+            if (parseInt(input.value) > 1) {
+                input.value = parseInt(input.value) - 1;
+            }
+        });
+    </script>
+}
+
+
+
+
+
+
+@* @model Product *@
+
+@* <form method="post"> *@
+@*     <div class="card shadow border-0 mt-4"> *@
+@*         <div class="card-header bg-secondary bg-gradient text-light py-4"> *@
+@*             <div class="row"> *@
+@*                 <div class="col-12 text-center"> *@
+@*                     <h3 class="text-white text-uppercase">@Model.Title</h3> *@
+@*                     <p class="text-white-50 fw-semibold mb-0">by @Model.Author</p> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*         <div class="card-body"> *@
+@*             <div class="py-3"> *@
+@*                 <div class="row"> *@
+@*                     <div class="col-6 col-md-2 offset-lg-1 pb-1"> *@
+@*                         <a asp-action="Index" class="btn btn-outline-primary bg-gradient mb-5 fw-semibold btn-sm text-uppercase"> *@
+@*                             <small>Back to home</small> *@
+@*                         </a> *@
+@*                     </div> *@
+@*                 </div> *@
+@*                 <div class="row"> *@
+@*                     <div class="col-12 col-lg-3 offset-lg-1 text-center mb-3"> *@
+@*                         <img src="~/Images/@Model.ImagePath" width="100%" class="rounded" /> *@
+@*                     </div> *@
+@*                     <div class="col-12 col-lg-6 offset-lg-1"> *@
+
+@*                         <div class="col-12 col-md-6 pb-4"> *@
+@*                             <span class="badge">@Model.Category.Name</span> *@
+@*                         </div> *@
+@*                         <div class="row ps-2"> *@
+@*                             <h6 class="text-dark text-opacity-50 ">ISBN : @Model.ISBN</h6> *@
+@*                         </div> *@
+@*                         <div class="row ps-2"> *@
+@*                             <h6 class="text-dark text-opacity-50  pb-2"> *@
+@*                                 List Price: *@
+@*                                 <span class="text-decoration-line-through"> *@
+@*                                     @Model.ListPrice.ToString("c") *@
+@*                                 </span> *@
+@*                             </h6> *@
+@*                         </div> *@
+@*                         <div class="row text-center ps-2"> *@
+@*                             <div class="p-1 col-3 col-lg-2 bg-white border-bottom"> *@
+@*                                 <div class="text-dark text-opacity-50 fw-semibold">Quantity</div> *@
+@*                             </div> *@
+@*                             <div class="p-1 col-3 col-lg-2 bg-white border-bottom"> *@
+@*                                 <div class="text-dark text-opacity-50 fw-semibold">1-50</div> *@
+@*                             </div> *@
+@*                             <div class="p-1 col-3 col-lg-2 bg-white border-bottom"> *@
+@*                                 <div class="text-dark text-opacity-50 fw-semibold">51-100</div> *@
+@*                             </div> *@
+@*                             <div class="p-1 col-3 col-lg-2 bg-white border-bottom"> *@
+@*                                 <div class="text-dark text-opacity-50 fw-semibold">100+</div> *@
+@*                             </div> *@
+@*                         </div> *@
+@*                         <div class="row text-center ps-2"> *@
+@*                             <div class="p-1 col-3 col-lg-2 bg-white text-warning fw-bold"> *@
+@*                                 <div>Price</div> *@
+@*                             </div> *@
+@*                             <div class="p-1 col-3 col-lg-2 bg-white text-warning fw-bold"> *@
+@*                                 <div>@Model.Price.ToString("c")</div> *@
+@*                             </div> *@
+@*                             <div class="p-1 col-3 col-lg-2 bg-white text-warning fw-bold"> *@
+@*                                 <div>@Model.Price50.ToString("c")</div> *@
+@*                             </div> *@
+@*                             <div class="p-1 col-3 col-lg-2 bg-white text-warning fw-bold"> *@
+@*                                 <div>@Model.Price100.ToString("c")</div> *@
+@*                             </div> *@
+@*                         </div> *@
+@*                         <div class="row pl-2 my-3"> *@
+@*                             <p class="text-secondary lh-sm">@Model.Description</p> *@
+@*                         </div> *@
+@*                         <div class="row pl-2 mb-3"> *@
+@*                             <div class="col-md-4"> *@
+@*                                 <div class="input-group mb-3"> *@
+@*                                     <span class="input-group-text bg-primary text-white border-0 fw-semibold" *@
+@*                                           id="inputGroup-sizing-default"> *@
+@*                                         Count *@
+@*                                     </span> *@
+@*                                     <input type="number" value="1" class="form-control text-end" *@
+@*                                            aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" /> *@
+
+@*                                 </div> *@
+@*                             </div> *@
+@*                         </div> *@
+@*                         <div class="row"> *@
+@*                             <div class="col-12 col-md-6 pb-1"> *@
+@*                                 <button type="submit" disabled *@
+@*                                         class="btn btn-primary bg-gradient  w-100 py-2 text-uppercase fw-semibold"> *@
+@*                                     Add to Cart (Comming Soon...) *@
+@*                                 </button> *@
+@*                             </div> *@
+@*                         </div> *@
+@*                     </div> *@
+
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </form> *@

@@ -1,0 +1,93 @@
+﻿@model List<ApplicationUser>
+
+
+
+@* <partial name="_Notifications"/> we made toaster global in layout *@
+
+<div class="container">
+
+
+    <div class="row pt-4 pb-3 align-items-center">
+        <!-- Search Bar -->
+        <div class="col-md-6 col-lg-4 mb-3">
+            <form class="input-group" asp-action="Index" asp-controller="User" method="get">
+                <input type="search" name="query" class="form-control" value=@Context.Request.Query["query"] placeholder="Search users..." />
+                <button class="btn btn-primary" type="submit">Search</button>
+            </form>
+        </div>
+
+        <!-- Heading -->
+        <div class="col-md-6 col-lg-4 mb-3 text-center">
+            <h2 class="fw-semibold">Users List</h2>
+        </div>
+
+        <!-- Add User Button -->
+        <div class="col-lg-4 text-end mb-3">
+            <a class="btn btn-success" asp-controller="User" asp-action="Create">
+                <i class="bi bi-plus-square me-1"></i>Add User
+            </a>
+        </div>
+    </div>
+
+
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                   Email
+                </th>
+                <th>
+                    Address
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.UserName</td>
+                    <td>@item.Email</td>
+                    <td>@item.Address</td>
+                    <td>
+                        <div class="w-75 btn-group " role="group">
+                            <a asp-controller="User" asp-action="Edit" asp-route-UserId="@item.Id" class="btn btn-info mx-2">
+                                <i class="bi bi-pencil"></i>Edit
+                            </a>
+
+                            @if(item.LockoutEnabled)
+                            {
+                                <a asp-controller="User" asp-action="Status" asp-route-UserId="@item.Id" class="btn btn-primary mx-2">
+                                    <i class="bi bi-ban"></i>Block
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-controller="User" asp-action="Status" asp-route-UserId="@item.Id" class="btn btn-warning mx-2">
+                                    <i class="bi bi-ban"></i>UnBlock
+                                </a>
+                            }
+                            
+
+                            <a asp-controller="User" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-danger mx-2">
+                                <i class="bi bi-trash"></i>Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+</div>

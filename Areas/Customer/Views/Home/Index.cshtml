@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Product>
+
+<div class="row pb-3 mt-2">
+    @foreach (var product in Model)
+    {
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="card border-0 shadow-sm h-100 d-flex flex-column" style="min-height: 550px;">
+
+                <img src="~/Images/@product.ImagePath"
+                     class="card-img-top rounded-top"
+                     style="height: 500px; width: 100%; object-fit: cover;" />
+
+
+
+
+                <!-- Card body takes up remaining space -->
+                <div class="card-body d-flex flex-column flex-grow-1 justify-content-between">
+                    <div>
+                        <h4 class="card-title text-primary">@product.Title</h4>
+                        <p class="card-text text-muted mb-2">
+                            <strong class="fs-5">Author:</strong> @product.Author
+                        </p>
+                        <p class="card-text text-dark fw-bold fs-4 mb-3">
+                            <strong>Price:</strong> $@product.Price.ToString("0.00")
+                        </p>
+                    </div>
+
+                    <!-- Button always at the bottom -->
+                    <div class="text-center mt-auto">
+                        <a asp-area="Customer" asp-action="Details" asp-route-Id="@product.Id"
+                           class="btn btn-primary btn-lg px-4 py-2">
+                            <i class="bi bi-eye-fill me-2"></i>View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
