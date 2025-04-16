@@ -30,12 +30,13 @@ namespace E_CommerceFIdentityScaff.Areas.Customer.Controllers
 
             shoppingCartVM = new()
             {
-                shoppingCarts = _unitOfWork.Cart.GetAll(c => c.ApplicationUserId == appuserid, includes: [c => c.Product, c => c.ApplicationUser])
+                shoppingCarts = _unitOfWork.Cart.GetAll(c => c.ApplicationUserId == appuserid, includes: [c => c.Product, c => c.ApplicationUser]),
+                orderHeader=new()
             };
 
             foreach (var item in shoppingCartVM.shoppingCarts)
             {
-                shoppingCartVM.OrderTotal += item.Product.Price * item.count;
+                shoppingCartVM.orderHeader.OrderTotal += item.Product.Price * item.count;
             }
 
             return View(shoppingCartVM);
@@ -97,7 +98,33 @@ namespace E_CommerceFIdentityScaff.Areas.Customer.Controllers
 
         }
 
-        public IActionResult Pay(ShoppingCart shoppingCart)
+        public async Task<IActionResult> Summary()
+        {
+            var appuserid = _userManager.GetUserId(User);
+            var appUser = await _userManager.FindByIdAsync(appuserid);
+
+            shoppingCartVM = new()
+            {
+                shoppingCarts = _unitOfWork.Cart.GetAll(c => c.ApplicationUserId == appuserid, includes: [c => c.Product, c => c.ApplicationUser]),
+                orderHeader = new()
+            };
+
+            shoppingCartVM.orderHeader.Name = appUser.UserName;
+            shoppingCartVM.orderHeader.PhoneNumber = appUser.PhoneNumber;
+            shoppingCartVM.orderHeader.City = appUser.City;
+            shoppingCartVM.orderHeader.PostalCode = appUser.PostalCode;
+            shoppingCartVM.orderHeader.State = appUser.State;
+            shoppingCartVM.orderHeader.StreetAddress = appUser.Address;
+
+            foreach (var item in shoppingCartVM.shoppingCarts)
+            {
+                shoppingCartVM.orderHeader.OrderTotal += item.Product.Price * item.count;
+            }
+
+            return View(shoppingCartVM);
+        }
+
+        public IActionResult Pay()
         {
             var appuserid = _userManager.GetUserId(User);
 

@@ -6,6 +6,9 @@
         IProductRepository Product { get; }
         ICartRepository Cart { get; }
         IUserRepository User { get; }
+        ICompanyRepository Company { get; }
+        IOrderHeaderRepository OrderHeader { get; }
+        IOrderDetailRepository OrderDetail { get; }
 
         public Task Commit();
     }

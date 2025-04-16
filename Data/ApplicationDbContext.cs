@@ -14,6 +14,9 @@ namespace E_CommerceFIdentityScaff.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<ShoppingCart> shoppingCarts { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<OrderHeader> OrderHeaders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

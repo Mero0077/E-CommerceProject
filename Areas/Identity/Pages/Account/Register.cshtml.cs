@@ -11,6 +11,7 @@ using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using E_CommerceFIdentityScaff.Models;
+using E_CommerceFIdentityScaff.Repository.IRepository;
 using E_CommerceFIdentityScaff.Utility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -34,6 +35,7 @@ namespace E_CommerceFIdentityScaff.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUnitOfWork _UnitOfWork;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
@@ -41,7 +43,9 @@ namespace E_CommerceFIdentityScaff.Areas.Identity.Pages.Account
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender ,
-            RoleManager<IdentityRole> roleManager
+            RoleManager<IdentityRole> roleManager,
+            IUnitOfWork unitOfWork
+            
             )
         {
             _userManager = userManager;
@@ -51,7 +55,7 @@ namespace E_CommerceFIdentityScaff.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _roleManager = roleManager; 
-           
+           _UnitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -109,10 +113,14 @@ namespace E_CommerceFIdentityScaff.Areas.Identity.Pages.Account
 
             public string? Address { get; set; }
 
-
+            public string? PhoneNumber { get; set; }
             public string? Role     { get; set; }
             [ValidateNever]
             public IEnumerable<SelectListItem> RoleList { get; set; }
+
+            public int? CompanyId { get; set; }
+            [ValidateNever]
+            public IEnumerable<SelectListItem> CompanyList { get; set; }
         }
 
 
@@ -131,42 +139,54 @@ namespace E_CommerceFIdentityScaff.Areas.Identity.Pages.Account
             {
                 RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
                 {
-                    Text=i,
-                    Value=i
+                    Text = i,
+                    Value = i
+                }),
+
+                CompanyList = _UnitOfWork.Company.GetAll().Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
                 })
             };
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
-        {
-            returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid)
+            public async Task<IActionResult> OnPostAsync(string returnUrl = null)
             {
-                var user = CreateUser();
-
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                user.Address = Input.Address;
-
-                
-
-                var result = await _userManager.CreateAsync(user, Input.Password);
-
-                if (result.Succeeded)
+                returnUrl ??= Url.Content("~/");
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                if (ModelState.IsValid)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    var user = CreateUser();
 
-                    if(! string.IsNullOrEmpty(Input.Role))
+                    await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                    await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                    user.Address = Input.Address;
+                    user.PhoneNumber = Input.PhoneNumber;
+
+                    if (!string.IsNullOrEmpty(Input.CompanyId.ToString()))
                     {
-                        await _userManager.AddToRoleAsync(user,Input.Role);
+                        user.CompanyId= Input.CompanyId;
                     }
-                    else
+
+                    var result = await _userManager.CreateAsync(user, Input.Password);
+
+                    if (result.Succeeded)
                     {
-                        await _userManager.AddToRoleAsync(user, Roles.Role_Cust);
-                    }
+                        _logger.LogInformation("User created a new account with password.");
+
+                        if(! string.IsNullOrEmpty(Input.Role))
+                        {
+                            await _userManager.AddToRoleAsync(user,Input.Role);
+                            
+                       
+                        }
+                        else
+                        {
+                            await _userManager.AddToRoleAsync(user, Roles.Role_Cust);
+                        }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
