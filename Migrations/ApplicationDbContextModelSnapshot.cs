@@ -95,36 +95,7 @@ namespace E_CommerceFIdentityScaff.Migrations
                     b.ToTable("Companies");
                 });
 
-            modelBuilder.Entity("E_CommerceFIdentityScaff.Models.OrderDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrderHeaderId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderHeaderId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("OrderDetails");
-                });
-
-            modelBuilder.Entity("E_CommerceFIdentityScaff.Models.OrderHeader", b =>
+            modelBuilder.Entity("E_CommerceFIdentityScaff.Models.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -139,53 +110,23 @@ namespace E_CommerceFIdentityScaff.Migrations
                     b.Property<string>("Carrier")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("OrderStatus")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("OrderTotal")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime2");
+                    b.Property<bool>("PaymentStatus")
+                        .HasColumnType("bit");
 
-                    b.Property<DateOnly>("PaymentDueDate")
-                        .HasColumnType("date");
-
-                    b.Property<string>("PaymentIntentId")
+                    b.Property<string>("PaymentStripeId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PaymentStatus")
+                    b.Property<string>("SessionId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ShippingDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StreetAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("TrackingNumber")
                         .HasColumnType("nvarchar(max)");
@@ -194,7 +135,28 @@ namespace E_CommerceFIdentityScaff.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("OrderHeaders");
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("E_CommerceFIdentityScaff.Models.OrderItem", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.HasKey("OrderId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("E_CommerceFIdentityScaff.Models.Product", b =>
@@ -584,26 +546,7 @@ namespace E_CommerceFIdentityScaff.Migrations
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
-            modelBuilder.Entity("E_CommerceFIdentityScaff.Models.OrderDetail", b =>
-                {
-                    b.HasOne("E_CommerceFIdentityScaff.Models.OrderHeader", "OrderHeader")
-                        .WithMany("OrderDetails")
-                        .HasForeignKey("OrderHeaderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("E_CommerceFIdentityScaff.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("OrderHeader");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("E_CommerceFIdentityScaff.Models.OrderHeader", b =>
+            modelBuilder.Entity("E_CommerceFIdentityScaff.Models.Order", b =>
                 {
                     b.HasOne("E_CommerceFIdentityScaff.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
@@ -612,6 +555,25 @@ namespace E_CommerceFIdentityScaff.Migrations
                         .IsRequired();
 
                     b.Navigation("ApplicationUser");
+                });
+
+            modelBuilder.Entity("E_CommerceFIdentityScaff.Models.OrderItem", b =>
+                {
+                    b.HasOne("E_CommerceFIdentityScaff.Models.Order", "Order")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("E_CommerceFIdentityScaff.Models.Product", "Product")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("E_CommerceFIdentityScaff.Models.Product", b =>
@@ -714,9 +676,14 @@ namespace E_CommerceFIdentityScaff.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("E_CommerceFIdentityScaff.Models.OrderHeader", b =>
+            modelBuilder.Entity("E_CommerceFIdentityScaff.Models.Order", b =>
                 {
-                    b.Navigation("OrderDetails");
+                    b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("E_CommerceFIdentityScaff.Models.Product", b =>
+                {
+                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

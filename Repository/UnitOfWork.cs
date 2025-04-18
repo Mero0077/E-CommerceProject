@@ -15,8 +15,10 @@ namespace E_CommerceFIdentityScaff.Repository
 
         public ICompanyRepository Company { get; set; }
 
-        public IOrderDetailRepository OrderDetail { get; set; }
-        public IOrderHeaderRepository OrderHeader { get; set; }
+        //public IOrderDetailRepository OrderDetail { get; set; }
+        //public IOrderHeaderRepository OrderHeader { get; set; }
+        public IOrderRepository Order { get; set; }
+        public IOrderItemRepository OrderItem { get; set; }
 
         public UnitOfWork(ApplicationDbContext dbContext) 
         {
@@ -26,8 +28,11 @@ namespace E_CommerceFIdentityScaff.Repository
             Cart= new CartRepository(dbContext);
             User= new UserRepository(dbContext);
             Company= new CompanyRepository(dbContext);
-            OrderDetail= new OrderDetailRepository(dbContext);
-            OrderHeader= new OrderHeaderRepository(dbContext);
+            //OrderDetail= new OrderDetailRepository(dbContext);
+            //OrderHeader= new OrderHeaderRepository(dbContext);
+            Order= new OrderRepository(dbContext);
+            OrderItem= new OrderItemRepository(dbContext);
+
         }
 
         public async Task Commit()

@@ -7,8 +7,10 @@
         ICartRepository Cart { get; }
         IUserRepository User { get; }
         ICompanyRepository Company { get; }
-        IOrderHeaderRepository OrderHeader { get; }
-        IOrderDetailRepository OrderDetail { get; }
+        //IOrderHeaderRepository OrderHeader { get; }
+        //IOrderDetailRepository OrderDetail { get; }
+        IOrderRepository Order { get; }
+        IOrderItemRepository OrderItem { get; }
 
         public Task Commit();
     }

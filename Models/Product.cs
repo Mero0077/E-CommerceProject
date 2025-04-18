@@ -35,6 +35,7 @@ namespace E_CommerceFIdentityScaff.Models
         [ValidateNever]
         public Category Category { get; set; }
         public int CategoryId { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
 
 
     }
