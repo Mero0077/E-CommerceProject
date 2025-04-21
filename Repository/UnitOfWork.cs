@@ -11,7 +11,7 @@ namespace E_CommerceFIdentityScaff.Repository
         public IProductRepository Product { get; set; }
         public ICartRepository Cart { get; set; }
 
-        public IUserRepository User { get; set; }
+        public IUserRepository ApplicationUser { get; set; }
 
         public ICompanyRepository Company { get; set; }
 
@@ -26,7 +26,7 @@ namespace E_CommerceFIdentityScaff.Repository
             Category= new CategoryRepository(dbContext);
             Product= new ProductRepository(dbContext);
             Cart= new CartRepository(dbContext);
-            User= new UserRepository(dbContext);
+            ApplicationUser = new UserRepository(dbContext);
             Company= new CompanyRepository(dbContext);
             //OrderDetail= new OrderDetailRepository(dbContext);
             //OrderHeader= new OrderHeaderRepository(dbContext);

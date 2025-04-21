@@ -5,7 +5,7 @@
         ICategoryRepository Category { get; }
         IProductRepository Product { get; }
         ICartRepository Cart { get; }
-        IUserRepository User { get; }
+        IUserRepository ApplicationUser { get; }
         ICompanyRepository Company { get; }
         //IOrderHeaderRepository OrderHeader { get; }
         //IOrderDetailRepository OrderDetail { get; }

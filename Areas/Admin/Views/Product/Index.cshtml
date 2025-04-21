@@ -1,4 +1,4 @@
-﻿@model List<Product>
+﻿@model PaginatedVM<Product>
 
 
 
@@ -46,7 +46,7 @@
     </thead>
 
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Items)
         {
             <tr>
                 <td>@item.Id</td>   
@@ -69,5 +69,22 @@
         }
     </tbody>
 </table>
+
+    <div class="row mt-3">
+        <div class="col-12 d-flex justify-content-center">
+
+            <nav aria-label="...">
+                <ul class="pagination">
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                            <a class="page-link" href="?page=@i&query=@Context.Request.Query["query"]">@i</a>
+                        </li>
+                    }
+
+                </ul>
+            </nav>
+        </div>
+    </div>
 </div>
 

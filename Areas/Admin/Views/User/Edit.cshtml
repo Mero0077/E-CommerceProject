@@ -1,0 +1,41 @@
+﻿@model E_CommerceFIdentityScaff.Models.ViewModels.UserWithRoleVM
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Edit User</h2>
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="@Model.User.Id" />
+
+        <div class="mb-3">
+            <label asp-for="@Model.User.UserName" class="form-label"></label>
+            <input asp-for="@Model.User.UserName" class="form-control" />
+            <span asp-validation-for="@Model.User.UserName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="@Model.User.Email" class="form-label"></label>
+            <input asp-for="@Model.User.Email" class="form-control" />
+            <span asp-validation-for="@Model.User.Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="@Model.User.PhoneNumber" class="form-label"></label>
+            <input asp-for="@Model.User.PhoneNumber" class="form-control" />
+            <span asp-validation-for="@Model.User.PhoneNumber" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="@Model.User.Address" class="form-label"></label>
+            <input asp-for="@Model.User.Address" class="form-control" />
+            <span asp-validation-for="@Model.User.Address" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Role" class="form-label">Role</label>
+            <select asp-for="Role" asp-items="Model.RoleList" class="form-select"></select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </form>
+</div>

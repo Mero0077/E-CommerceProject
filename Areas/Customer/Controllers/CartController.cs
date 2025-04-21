@@ -32,7 +32,7 @@ namespace E_CommerceFIdentityScaff.Areas.Customer.Controllers
 
             return View(carts.ToList());
         }
-        public async  Task<IActionResult> AddToCart(int ProductId, int Qty)
+        public async  Task<IActionResult> AddToCart(int ProductId, int count)
         {
             var UserId= _userManager.GetUserId(User);
             var CartInDb= await _unitOfWork.Cart.GetOne(e=>e.ApplicationUserId == UserId && e.ProductId==ProductId);
@@ -40,13 +40,13 @@ namespace E_CommerceFIdentityScaff.Areas.Customer.Controllers
 
             if (CartInDb != null)
             
-                CartInDb.count += Qty;
+                CartInDb.count += count;
             else
             {
                 var cart = new ShoppingCart()
                 {
                     ApplicationUserId = UserId,
-                    count = Qty,
+                    count = count,
                     ProductId = ProductId
                 };
                 await _unitOfWork.Cart.Add(cart);

@@ -2,19 +2,25 @@
 
 namespace E_CommerceFIdentityScaff.Repository.IRepository
 {
-    public interface IRepository<T> 
+    public interface IRepository<T> where T : class
     {
-        public Task Add(T entity);
-        public Task AddAll(List<T> entities);
-        public void Edit(T entity);
-        public void Delete(T entity);
-        public void DeleteAll(List<T> entities);
-        public Task Commit();
+        Task Add(T entity);
+        Task AddAll(List<T> entities);
+        void Edit(T entity);
+        void Delete(T entity);
+        void DeleteAll(List<T> entities);
+        Task Commit();
+        IQueryable<T> GetAll(
+            Expression<Func<T, bool>>? filter = null,
+            Expression<Func<T, object>>[]? includes = null,
+            bool tracked = true);
 
-        public IQueryable<T> GetAll(Expression<Func<T, bool>>? filter = null, Expression<Func<T, object>>[]? includes = null, bool tracked = true);
+        Task<T> GetOne(
+            Expression<Func<T, bool>>? filter = null,
+            Expression<Func<T, object>>[]? includes = null,
+            bool tracked = true);
 
-        public Task<T>? GetOne(Expression<Func<T, bool>>? filter = null, Expression<Func<T, object>>[]? includes = null, bool tracked = true);
-
-        public Task< bool> Exists(Expression<Func<T, bool>> filter);
+        Task<bool> Exists(Expression<Func<T, bool>> filter);
     }
+
 }

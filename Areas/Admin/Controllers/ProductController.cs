@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using E_CommerceFIdentityScaff.Models;
 using Microsoft.AspNetCore.Authorization;
 using E_CommerceFIdentityScaff.Models.ViewModels;
+using E_CommerceFIdentityScaff.Utility;
 
 namespace E_CommerceFIdentityScaff.Areas.Admin.Controllers
 {
@@ -19,10 +20,12 @@ namespace E_CommerceFIdentityScaff.Areas.Admin.Controllers
         }
 
         [AllowAnonymous]
-        public IActionResult Index()
+        public IActionResult Index(string? query, int page = 1, int PageSize = 5)
         {
-            var products = _unitOfWork.Product.GetAll(null, includes: [p => p.Category]);
-            return View(products.ToList());
+            var products = _unitOfWork.Product.GetAll(null, includes: [p => p.Category]).ToList();
+            PaginatedVM<Product> vm = PaginationHelper.Paginate(products, page, PageSize);
+
+            return View(vm);
         }
 
         [HttpGet]

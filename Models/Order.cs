@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace E_CommerceFIdentityScaff.Models
 {
@@ -14,7 +15,9 @@ namespace E_CommerceFIdentityScaff.Models
     public class Order
     {
         public int Id { get; set; }
+        [ValidateNever]
         public string ApplicationUserId { get; set; }
+        [ValidateNever]
         public ApplicationUser ApplicationUser { get; set; }
         public DateTime OrderDate { get; set; }
         public double OrderTotal { get; set; }
@@ -25,7 +28,7 @@ namespace E_CommerceFIdentityScaff.Models
 
         public string? SessionId { get; set; }
         public string? PaymentStripeId { get; set; }
-
+        [ValidateNever]
         public ICollection<OrderItem> OrderItems { get; set; }
 
         [Required]

@@ -1,0 +1,40 @@
+﻿@model E_CommerceFIdentityScaff.Models.ViewModels.UserVM
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Create New User</h2>
+
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label asp-for="@Model.ApplicationUser.UserName" class="form-label"></label>
+            <input asp-for="@Model.ApplicationUser.UserName" class="form-control" />
+            <span asp-validation-for="@Model.ApplicationUser.UserName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="@Model.ApplicationUser.Email" class="form-label"></label>
+            <input asp-for="@Model.ApplicationUser.Email" class="form-control" />
+            <span asp-validation-for="@Model.ApplicationUser.Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="@Model.ApplicationUser.PhoneNumber" class="form-label"></label>
+            <input asp-for="@Model.ApplicationUser.PhoneNumber" class="form-control" />
+            <span asp-validation-for="@Model.ApplicationUser.PhoneNumber" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="@Model.ApplicationUser.Address" class="form-label"></label>
+            <input asp-for="@Model.ApplicationUser.Address" class="form-control" />
+            <span asp-validation-for="@Model.ApplicationUser.Address" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Password</label>
+            <input name="Password" type="password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">Create</button>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </form>
+</div>

@@ -3,6 +3,8 @@ using E_CommerceFIdentityScaff.Repository.IRepository;
 using E_CommerceFIdentityScaff.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using E_CommerceFIdentityScaff.Models.ViewModels;
+using E_CommerceFIdentityScaff.Utility;
 
 namespace E_CommerceFIdentityScaff.Areas.Admin.Controllers
 {
@@ -16,10 +18,11 @@ namespace E_CommerceFIdentityScaff.Areas.Admin.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-        public IActionResult Index()
+        public IActionResult Index(string? query, int page= 1, int PageSize = 5)
         {
-            var cats = _unitOfWork.Category.GetAll();
-            return View(cats.ToList());
+            var cats = _unitOfWork.Category.GetAll().ToList();
+            PaginatedVM<Category> vm = PaginationHelper.Paginate(cats, page, PageSize);
+            return View(vm);
         }
 
         [HttpGet]
